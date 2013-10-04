@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.IO;
 
 namespace ACMLauncher
 {
@@ -48,7 +37,7 @@ namespace ACMLauncher
         }
 
         private void launchButton_Click(object sender, RoutedEventArgs e)
-        {
+        {          
             String path = executableLocationBox.Text;
             String extension = path.Substring(path.LastIndexOf('.'));
             if (!extension.Equals(".exe"))
@@ -61,7 +50,12 @@ namespace ACMLauncher
             try
             {
                 Current = new Process();
+
                 Current.StartInfo.FileName = path;
+
+                //Add working directory info so that we can specify the working directory so our programs know where to grab assets
+                //If we don't the programs don't load assets
+                Current.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
 
                 // Allows the Process object to raise events. The important event is Exited.
                 Current.EnableRaisingEvents = true;
@@ -69,6 +63,7 @@ namespace ACMLauncher
                 // Register our event handler (see process_Exited() below).
                 Current.Exited += new EventHandler(process_Exited);
 
+                //pass our start
                 Current.Start();
                 Running = true;
             }

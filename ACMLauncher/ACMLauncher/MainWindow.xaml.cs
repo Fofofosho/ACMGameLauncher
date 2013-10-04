@@ -1,34 +1,19 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Windows;
 using System.IO;
+using System.Windows;
 
 namespace ACMLauncher
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        private bool running = false;
-        public bool Running
-        {
-            get
-            {
-                return this.running;
-            }
-
-            set
-            {
-                this.running = value;
-                launchButton.IsEnabled = !running;
-                quitButton.IsEnabled = running;
-                forceQuitButton.IsEnabled = running;
-            }
-        }
-        
         // This object holds information about the currently running process. It's key to managing the launcher.
-        Process Current;
+        private Process _current;
+        private bool _running;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -36,43 +21,56 @@ namespace ACMLauncher
             quitButton.IsEnabled = false;
         }
 
-        private void launchButton_Click(object sender, RoutedEventArgs e)
-        {          
-            String path = executableLocationBox.Text;
-            //String extension = path.Substring(path.LastIndexOf('.'));
-            if (path.LastIndexOf('.') == -1 || !path.Substring(path.LastIndexOf('.')).Equals(".exe"))
+        public bool Running
+        {
+            get { return _running; }
+
+            set
             {
-                MessageBox.Show("That is not a windows executable. Windows executables are files which end in \".exe\"", "Invalid Path");
+                _running = value;
+                launchButton.IsEnabled = !_running;
+                quitButton.IsEnabled = _running;
+                forceQuitButton.IsEnabled = _running;
+            }
+        }
+
+        private void launchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var path = new FileInfo(executableLocationBox.Text);
+            if (path.Extension != ".exe" && path.Extension != ".swf" && path.Extension != ".jar") //TODO: Add check for other file extensions
+            {
+                MessageBox.Show(
+                    "That is not a windows executable. Windows executables are files which end in \".exe\"",
+                    "Invalid Path");
                 return;
             }
 
             // Let's run our valid executable.
             try
             {
-                Current = new Process();
+                _current = new Process();
 
-                Current.StartInfo.FileName = path;
+                _current.StartInfo.FileName = path.ToString();
 
                 //Add working directory info so that we can specify the working directory so our programs know where to grab assets
                 //If we don't the programs don't load assets
-                Current.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
+                _current.StartInfo.WorkingDirectory = Path.GetDirectoryName(path.ToString());
 
                 // Allows the Process object to raise events. The important event is Exited.
-                Current.EnableRaisingEvents = true;
+                _current.EnableRaisingEvents = true;
 
                 // Register our event handler (see process_Exited() below).
-                Current.Exited += new EventHandler(process_Exited);
+                _current.Exited += process_Exited;
 
                 //pass our start
-                Current.Start();
+                _current.Start();
                 Running = true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("An error has occurred in starting the process.\n" + ex.Message, "Critical Error");
-                Current = null;
+                _current = null;
                 Running = false;
-                return;
             }
         }
 
@@ -81,9 +79,9 @@ namespace ACMLauncher
             // This event handler can deal with the process closing asynchronously; it's a lot nicer than the synchronous method WaitForExit()
             // Because the Exited event will be handled on a different thread from the UI thread, we must use a lambda.
             // See http://stackoverflow.com/questions/9732709/the-calling-thread-cannot-access-this-object-because-a-different-thread-owns-it
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke((Action) (() =>
             {
-                Current = null;
+                _current = null;
                 Running = false;
             }));
         }
@@ -91,15 +89,13 @@ namespace ACMLauncher
         private void quitButton_Click(object sender, RoutedEventArgs e)
         {
             // This is likely what we want for the launcher. It closes the main window of the process, allowing that process time to 
-            Current.CloseMainWindow();
+            _current.CloseMainWindow();
         }
 
         private void forceQuitButton_Click(object sender, RoutedEventArgs e)
         {
             // This will kill the process outright. Should only really be used if process does not exit in enough time.
-            Current.Kill();
+            _current.Kill();
         }
-
-
     }
 }

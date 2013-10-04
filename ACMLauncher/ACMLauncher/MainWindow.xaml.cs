@@ -39,8 +39,8 @@ namespace ACMLauncher
         private void launchButton_Click(object sender, RoutedEventArgs e)
         {          
             String path = executableLocationBox.Text;
-            String extension = path.Substring(path.LastIndexOf('.'));
-            if (!extension.Equals(".exe"))
+            //String extension = path.Substring(path.LastIndexOf('.'));
+            if (path.LastIndexOf('.') == -1 || !path.Substring(path.LastIndexOf('.')).Equals(".exe"))
             {
                 MessageBox.Show("That is not a windows executable. Windows executables are files which end in \".exe\"", "Invalid Path");
                 return;

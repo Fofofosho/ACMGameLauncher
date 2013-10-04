@@ -40,7 +40,7 @@ namespace ACMLauncher
             if (path.Extension != ".exe" && path.Extension != ".swf" && path.Extension != ".jar") //TODO: Add check for other file extensions
             {
                 MessageBox.Show(
-                    "That is not a windows executable. Windows executables are files which end in \".exe\"",
+                    "That is not a valid file extension type, your extension is " + path.Extension + "! \nSee documentation for valid extension types!",
                     "Invalid Path");
                 return;
             }

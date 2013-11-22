@@ -2,6 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACMLauncher", "ACMLauncher\ACMLauncher.csproj", "{427DADAB-F732-411A-83E1-AD7BF84C4884}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0626C2DF-1F64-46E9-86CA-22EA5D1B0939} = {0626C2DF-1F64-46E9-86CA-22EA5D1B0939}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACMLauncher.GameLibrary", "GameLibrary\ACMLauncher.GameLibrary.csproj", "{0626C2DF-1F64-46E9-86CA-22EA5D1B0939}"
 EndProject

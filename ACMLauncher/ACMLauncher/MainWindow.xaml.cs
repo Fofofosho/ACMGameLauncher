@@ -53,8 +53,13 @@ namespace ACMLauncher
         {
             //TODO: Come back to this once the population is finalized
             _gameManager.FindAllGames();
-            foreach (var game in _gameManager.getList())
-                _listBox.Items.Add(game);
+
+            //_listBox.BeginInit();
+            //TODO: REVIEW THIS http://stackoverflow.com/questions/6919694/wpf-adding-new-items-to-a-listbox
+            //foreach (var game in _gameManager.getList())
+            //    var listItem = new ListBoxItem().;
+            //    _listBox.Items.Add(game);
+            //_listBox.EndInit();
         }
 
         private void launchButton_Click(object sender, RoutedEventArgs e)
@@ -128,6 +133,12 @@ namespace ACMLauncher
 
         private void selectProcess_OnClick(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void GameList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //Change image based on which item in list is select, grab its images to change in this field.
+            throw new NotImplementedException();
         }
     }
 }

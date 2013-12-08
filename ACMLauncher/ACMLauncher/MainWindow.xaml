@@ -10,8 +10,9 @@
         <Button x:Name="LaunchButton" Content="Launch" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="84,39,0,0" Click="launchButton_Click"/>
         <Button x:Name="QuitButton" Content="Quit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="164,39,0,0" Click="quitButton_Click"/>
         <Button x:Name="ForceQuitButton" Content="Force Quit" HorizontalAlignment="Left" Margin="244,39,0,0" VerticalAlignment="Top" Width="75" Click="forceQuitButton_Click"/>
-        <ListBox x:Name="GameList" HorizontalAlignment="Left" Height="410" Margin="447,10,0,0" VerticalAlignment="Top" Width="303"/>
+        <ListBox x:Name="GameList" DisplayMemberPath="GameName" HorizontalAlignment="Left" Height="410" Margin="447,10,0,0" VerticalAlignment="Top" Width="303" SelectionChanged="GameList_OnSelectionChanged"/>
         <Button x:Name="SelectProcess" Content="Start Game" HorizontalAlignment="Left" Margin="675,425,0,0" VerticalAlignment="Top" Width="75" Click="selectProcess_OnClick"/>
+        <Image x:Name ="ImageBox" HorizontalAlignment="Left" Height="164" Margin="164,213,0,0" VerticalAlignment="Top" Width="208"/>
 
     </Grid>
 </Window>

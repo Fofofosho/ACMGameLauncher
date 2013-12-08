@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ACMLauncher.GameLibrary
 {
@@ -32,20 +35,34 @@ namespace ACMLauncher.GameLibrary
             //TODO: Decide to make a folder somewhere on the arcade cabinet and set the directory path equal to that
             //var gameLibraryDir = new DirectoryInfo(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory));
 
-            var folderList = new DirectoryInfo("C:\\GameLibrary").GetDirectories();
-            //pathOfFolder.
+            //CreateDirectory will create the directory if it doesn't exist. If it does, it does not try to create it
+            var folderList = Directory.CreateDirectory("C:\\GameLibrary").GetDirectories();
 
             foreach (var gameDirectory in folderList)
             {
-                var game = new Game();
-                game.PathToGameFolder = gameDirectory.FullName;
-                game.GameName = gameDirectory.Name;
-                
-                //TODO: Fix this >>
-                //game.Executable = gameDirectory.GetFiles("*.exe");
+                /* What we are requiring
+                 * 
+                 * Title:
+                 * Author:
+                 * Version:
+                 * Publisher:
+                 * Genre:
+                 * NumberPlayers:
+                 * Description:
+                 * ImageFolder:
+                 * VideoDemo:
+                 * 
+                 */
 
-                //game.InializerFile =
-                //_gameList.Add(game);
+                var json = gameDirectory.GetFiles("*.json").FirstOrDefault();
+                var game = new Game 
+                         {  PathToGameFolder    = gameDirectory.FullName, 
+                            GameName            = gameDirectory.Name,
+                            Executable          = gameDirectory.GetFiles("*.exe").FirstOrDefault(),
+                            InializerFile       = json
+                         };
+
+                _gameList.Add(game);
             }
 
         }

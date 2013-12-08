@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace ACMLauncher.GameLibrary
 {
@@ -9,6 +10,6 @@ namespace ACMLauncher.GameLibrary
         public string GameName { get; set; }
 
         //TODO: Change this based on what we require the game to come with, so we can display summary information and link to an image 
-        public FileInfo InializerFile { get; set; }
+        public JArray InializerFile { get; set; }
     }
 }

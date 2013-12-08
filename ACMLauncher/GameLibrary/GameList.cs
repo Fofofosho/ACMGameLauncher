@@ -54,15 +54,18 @@ namespace ACMLauncher.GameLibrary
                  * 
                  */
 
-                var json = gameDirectory.GetFiles("*.json").FirstOrDefault();
-                var game = new Game 
-                         {  PathToGameFolder    = gameDirectory.FullName, 
-                            GameName            = gameDirectory.Name,
-                            Executable          = gameDirectory.GetFiles("*.exe").FirstOrDefault(),
-                            InializerFile       = json
-                         };
+                //TODO change json to be an actual JSON object that can be queriable
+                //http://stackoverflow.com/questions/16045569/how-to-access-elements-of-a-jarray
+                //This is for MainWindow - to change the image when something is selected
+                //var json = gameDirectory.GetFiles("*.json").FirstOrDefault() as JArray;
+                //var game = new Game 
+                //         {  PathToGameFolder    = gameDirectory.FullName, 
+                //            GameName            = gameDirectory.Name,
+                //            Executable          = gameDirectory.GetFiles("*.exe").FirstOrDefault(),
+                //            InializerFile       = json
+                //         };
 
-                _gameList.Add(game);
+                //_gameList.Add(game);
             }
 
         }

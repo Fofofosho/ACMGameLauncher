@@ -137,8 +137,17 @@ namespace ACMLauncher
 
         private void GameList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //TODO: GameList, make the JSON file work with the below objective
             //Change image based on which item in list is select, grab its images to change in this field.
-            throw new NotImplementedException();
+
+            //var selectedGame = _listBox.SelectedItem as Game;
+            //if (selectedGame == null) return;
+
+            //else
+            //{
+            //    var file = selectedGame.InializerFile;
+            //    file.read
+            //}
         }
     }
 }

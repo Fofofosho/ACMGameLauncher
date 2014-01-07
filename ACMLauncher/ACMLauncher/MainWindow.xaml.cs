@@ -135,6 +135,7 @@ namespace ACMLauncher
         {
         }
 
+        //This will read the contents of the JSON file. Update text on screen once selection has changed.
         private void GameList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //TODO: GameList, make the JSON file work with the below objective

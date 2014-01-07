@@ -10,9 +10,11 @@
         <Button x:Name="LaunchButton" Content="Launch" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="84,39,0,0" Click="launchButton_Click"/>
         <Button x:Name="QuitButton" Content="Quit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="164,39,0,0" Click="quitButton_Click"/>
         <Button x:Name="ForceQuitButton" Content="Force Quit" HorizontalAlignment="Left" Margin="244,39,0,0" VerticalAlignment="Top" Width="75" Click="forceQuitButton_Click"/>
-        <ListBox x:Name="GameList" DisplayMemberPath="GameName" HorizontalAlignment="Left" Height="410" Margin="447,10,0,0" VerticalAlignment="Top" Width="303" SelectionChanged="GameList_OnSelectionChanged"/>
-        <Button x:Name="SelectProcess" Content="Start Game" HorizontalAlignment="Left" Margin="675,425,0,0" VerticalAlignment="Top" Width="75" Click="selectProcess_OnClick"/>
-        <Image x:Name ="ImageBox" HorizontalAlignment="Left" Height="164" Margin="164,213,0,0" VerticalAlignment="Top" Width="208"/>
+        <ListBox x:Name="GameList" DisplayMemberPath="GameName" HorizontalAlignment="Left" Height="410" Margin="37,79,0,0" VerticalAlignment="Top" Width="303" SelectionChanged="GameList_OnSelectionChanged"/>
+        <Button x:Name="SelectProcess" Content="Start Game" HorizontalAlignment="Left" Margin="633,467,0,0" VerticalAlignment="Top" Width="75" Click="selectProcess_OnClick"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="176" Margin="442,241,0,0" VerticalAlignment="Top" Width="222"/>
+        <Image x:Name ="ImageBox" HorizontalAlignment="Left" Height="164" Margin="449,247,0,0" VerticalAlignment="Top" Width="208"/>
+        <Label x:Name="Label" HorizontalAlignment="Left" Margin="442,65,0,0" VerticalAlignment="Top" Width="250" Height="59"/>
 
     </Grid>
 </Window>

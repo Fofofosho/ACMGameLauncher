@@ -9,7 +9,7 @@ namespace ACMLauncher.GameLibrary
         public FileInfo Executable { get; set; }
         public string GameName { get; set; }
 
-        //TODO: Change this based on what we require the game to come with, so we can display summary information and link to an image 
-        public JArray InializerFile { get; set; }
+        //This is file info just so it points to the JSON file
+        public FileInfo InializerFile { get; set; }
     }
 }

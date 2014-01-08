@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -52,7 +55,14 @@ namespace ACMLauncher
         private void PopulateListBox()
         {
             //TODO: Come back to this once the population is finalized
-            _gameManager.FindAllGames();
+            FindAllGames();
+            
+            foreach (var game in _gameManager)
+            {
+                GameListBox.Items.Add(game.GameName);
+            }
+
+            GameListBox.SelectedIndex = 0;
 
             //_listBox.BeginInit();
             //TODO: REVIEW THIS http://stackoverflow.com/questions/6919694/wpf-adding-new-items-to-a-listbox
@@ -60,6 +70,50 @@ namespace ACMLauncher
             //    var listItem = new ListBoxItem().;
             //    _listBox.Items.Add(game);
             //_listBox.EndInit();
+        }
+
+        /// <summary>
+        /// Needs to find all games and populate the list dynamically
+        /// </summary>
+        public void FindAllGames()
+        {
+            //TODO: Decide to make a folder somewhere on the arcade cabinet and set the directory path equal to that
+            //var gameLibraryDir = new DirectoryInfo(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory));
+
+            //CreateDirectory will create the directory if it doesn't exist. If it does, it does not try to create it
+            var folderList = Directory.CreateDirectory("C:\\GameLibrary").GetDirectories();
+
+            foreach (var gameDirectory in folderList)
+            {
+                /* What we are requiring
+                 * 
+                 * Title:
+                 * Author:
+                 * Version:
+                 * Publisher:
+                 * Genre:
+                 * NumberPlayers:
+                 * Description:
+                 * ImageFolder:
+                 * VideoDemo:
+                 * 
+                 */
+
+                //TODO change json to be an actual JSON object that can be queriable
+                //http://stackoverflow.com/questions/16045569/how-to-access-elements-of-a-jarray
+                //This is for MainWindow - to change the image when something is selected
+                var json = gameDirectory.GetFiles("*.json").FirstOrDefault();
+                var game = new Game
+                {
+                    PathToGameFolder = gameDirectory.FullName,
+                    GameName = gameDirectory.Name,
+                    Executable = gameDirectory.GetFiles("*.exe").FirstOrDefault(),
+                    InializerFile = json
+                };
+
+                _gameManager.Add(game);
+            }
+
         }
 
         private void launchButton_Click(object sender, RoutedEventArgs e)
@@ -138,17 +192,12 @@ namespace ACMLauncher
         //This will read the contents of the JSON file. Update text on screen once selection has changed.
         private void GameList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //TODO: GameList, make the JSON file work with the below objective
+            //TODO: GameListBox, make the JSON file work with the below objective
             //Change image based on which item in list is select, grab its images to change in this field.
 
-            //var selectedGame = _listBox.SelectedItem as Game;
-            //if (selectedGame == null) return;
+            var selectedGame = _gameManager.Single(x => x.GameName.Equals(GameListBox.SelectedItem.ToString()));
 
-            //else
-            //{
-            //    var file = selectedGame.InializerFile;
-            //    file.read
-            //}
+            GameNameBlock.Text = selectedGame.GameName;
         }
     }
 }

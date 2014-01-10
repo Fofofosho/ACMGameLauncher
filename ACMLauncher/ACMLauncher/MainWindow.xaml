@@ -5,16 +5,30 @@
         WindowState="Maximized"
         WindowStyle="None"
         Width="1600"
-        Height="900"
+        Height="900" 
         >
 
+    <Window.CommandBindings>
+        <CommandBinding Command="MoveUp"
+                        CanExecute="SelectUp_ListBox"/>
+        <CommandBinding Command="MoveDown"
+                        CanExecute="SelectDown_ListBox"/>
+    </Window.CommandBindings>
+    
+    <Window.InputBindings>
+        <KeyBinding Key="W" Command="MoveUp"/>
+        <KeyBinding Key="S" Command="MoveDown"/>
+    </Window.InputBindings>
+    
 
-    <Grid TextElement.Foreground="Red"> 
-        <TextBox x:Name="ExecutableLocationBox" HorizontalAlignment="Left" Height="20" Margin="126,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="235" Text="C:\Windows\notepad.exe"/>
-        <Label x:Name="ExeLabel" Content="Executable:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="52,17,0,0"/>
-        <Button x:Name="LaunchButton" Content="Launch" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="126,46,0,0" Click="launchButton_Click"/>
-        <Button x:Name="QuitButton" Content="Quit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="206,46,0,0" Click="quitButton_Click"/>
-        <Button x:Name="ForceQuitButton" Content="Force Quit" HorizontalAlignment="Left" Margin="286,46,0,0" VerticalAlignment="Top" Width="75" Click="forceQuitButton_Click"/>
+    <Grid TextElement.Foreground="Red" Background="SlateGray"> 
+        
+        <TextBox x:Name="ExecutableLocationBox" HorizontalAlignment="Left" Height="20" Margin="82,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="235" Text="C:\Windows\notepad.exe"/>
+
+        <!--**Different looks for the listbox**
+            http://msdn.microsoft.com/en-us/library/windows/apps/hh464965.aspx
+            http://www.codeproject.com/Articles/18561/Custom-ListBox-Layout-in-WPF    
+        -->
         <ListBox x:Name="GameListBox" FontSize="30" HorizontalAlignment="Left" Height="740" Margin="52,84,0,0" VerticalAlignment="Top" Width="550" SelectionMode="Single" SelectionChanged="GameList_OnSelectionChanged"/>
         <Image x:Name ="ImageBox" HorizontalAlignment="Left" Height="434" Margin="700,390,0,0" VerticalAlignment="Top" Width="676"/>
         <TextBlock x:Name="GameNameBlock" Height="80" Margin="700,84,216,0" TextWrapping="Wrap" VerticalAlignment="Top"/>

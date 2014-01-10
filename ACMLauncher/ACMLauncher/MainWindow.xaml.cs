@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -19,9 +18,16 @@ namespace ACMLauncher
         private readonly Launcher _launcher;
 
         // This object holds information about the currently running process. It's key to managing the launcher.
-        private Process _current;
-        private bool _running;
-        private bool _init;
+        private readonly bool _init;
+
+        //TODO
+        /*
+         * Will contain usage information
+        Create a .log file in the C://GameLibrary
+        
+        **Format
+        Timestamp -- What occured
+         */
 
         public MainWindow()
         {
@@ -29,43 +35,30 @@ namespace ACMLauncher
 
             InitializeComponent();
 
-            SetState(false);
             _launcher = new Launcher(this);
 
             Running = false;
-            QuitButton.IsEnabled = false;
-            KeyDown += ForceQuitButton_OnKeyDown;
+            KeyDown += SelectGame_OnKeyDown;
             _gameManager = new GameList();
             PopulateListBox();
 
             _init = false;
         }
 
-        public bool Running
-        {
-            get { return _running; }
-
-            set
-            {
-                _running = value;
-                LaunchButton.IsEnabled = !_running;
-                QuitButton.IsEnabled = _running;
-                ForceQuitButton.IsEnabled = _running;
-            }
-        }
+        public bool Running { get; set; }
 
         public void ApplicationDidQuit()
         {
-            SetState(false);
+            //SetState(false);
 
             // This event handler can deal with the process closing asynchronously; it's a lot nicer than the synchronous method WaitForExit()
             // Because the Exited event will be handled on a different thread from the UI thread, we must use a lambda.
             // See http://stackoverflow.com/questions/9732709/the-calling-thread-cannot-access-this-object-because-a-different-thread-owns-it
             Dispatcher.Invoke(new Action(() =>
             {
-                _current = null;
                 Running = false;
             }));
+
         }
 
         private void PopulateListBox()
@@ -119,67 +112,26 @@ namespace ACMLauncher
                 };
 
                 _gameManager.Add(game);
+                
             }
         }
 
-        private void launchButton_Click(object sender, RoutedEventArgs e)
+        private void SelectGame_OnKeyDown(object sender, KeyEventArgs e)
         {
-            var path = new FileInfo(ExecutableLocationBox.Text);
-            if (path.Extension != ".exe" && path.Extension != ".swf" && path.Extension != ".jar")
-                //TODO: Add check for other file extensions
+            if (e.Key == Key.R || e.Key == Key.Z)
             {
-                MessageBox.Show(
-                    "That is not a valid file extension type, your extension is " + path.Extension +
-                    "! \nSee documentation for valid extension types!",
-                    "Invalid Path");
-                return;
+                // Let's run our valid executable.
+                try
+                {
+                    _launcher.SetProgram(ExecutableLocationBox.Text);
+                    _launcher.StartProgram();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error has occurred in starting the process.\n" + ex.Message, "Critical Error");
+                }
             }
-
-            // Let's run our valid executable.
-            try
-            {
-                _launcher.SetProgram(ExecutableLocationBox.Text);
-                _launcher.StartProgram();
-                SetState(true);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error has occurred in starting the process.\n" + ex.Message, "Critical Error");
-                SetState(false);
-            }
-        }
-
-        private void quitButton_Click(object sender, RoutedEventArgs e)
-        {
-            // This is likely what we want for the launcher. It closes the main window of the process, allowing that process time to 
-            _launcher.QuitProgram();
-        }
-
-        private void forceQuitButton_Click(object sender, RoutedEventArgs e)
-        {
-            // This will kill the process outright. Should only really be used if process does not exit in enough time.
-            _launcher.ForceQuitProgram();
-        }
-
-        private void SetState(bool running)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                LaunchButton.IsEnabled = !running;
-                QuitButton.IsEnabled = running;
-                ForceQuitButton.IsEnabled = running;
-            }));
-        }
-
-        private void ForceQuitButton_OnKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.B && Running && ExecutableLocationBox.IsFocused == false)
-                _current.Kill();
-        }
-
-        private void selectProcess_OnClick(object sender, RoutedEventArgs e)
-        {
-
+            
         }
 
         //Update fields on screen once selection has changed.
@@ -194,7 +146,36 @@ namespace ACMLauncher
             GameNameBlock.Text = selectedGame.Information.Title ?? "Unavailable";
             GameDescription.Text = selectedGame.Information.Description ?? "Unavailable";
 
-            ExecutableLocationBox.Text = selectedGame.Executable == null ? "Unavailable" : selectedGame.Executable.ToString();
+            //TODO: REMOVE---DEBUG
+            try
+            {
+                ExecutableLocationBox.Text = selectedGame.Executable.FullName;
+            }
+            catch (NullReferenceException)
+            {
+                ExecutableLocationBox.Text = "Unavailable";
+            }
+            
+        }
+
+        //Handles the moving the selector upwards in the listbox
+        private void SelectUp_ListBox(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (GameListBox.SelectedIndex > 0)
+                GameListBox.SelectedIndex--;
+
+            //Required for re-entry of MainWindow
+            GameListBox.Focus();
+        }
+
+        //Handles the moving the selector downwards in the listbox
+        private void SelectDown_ListBox(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (GameListBox.SelectedIndex < GameListBox.Items.Count)
+                GameListBox.SelectedIndex++;
+
+            //Required for re-entry of MainWindow
+            GameListBox.Focus();
         }
     }
 }

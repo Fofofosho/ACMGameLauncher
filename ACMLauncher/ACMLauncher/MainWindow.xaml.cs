@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ACMLauncher.GameLibrary;
+using Newtonsoft.Json;
 
 namespace ACMLauncher
 {
@@ -18,14 +17,16 @@ namespace ACMLauncher
     {
         private readonly GameList _gameManager;
         private readonly Launcher _launcher;
-        private readonly ListBox _listBox;
 
         // This object holds information about the currently running process. It's key to managing the launcher.
         private Process _current;
         private bool _running;
+        private bool _init;
 
         public MainWindow()
         {
+            _init = true;
+
             InitializeComponent();
 
             SetState(false);
@@ -34,9 +35,10 @@ namespace ACMLauncher
             Running = false;
             QuitButton.IsEnabled = false;
             KeyDown += ForceQuitButton_OnKeyDown;
-            _listBox = new ListBox();
             _gameManager = new GameList();
             PopulateListBox();
+
+            _init = false;
         }
 
         public bool Running
@@ -52,34 +54,38 @@ namespace ACMLauncher
             }
         }
 
+        public void ApplicationDidQuit()
+        {
+            SetState(false);
+
+            // This event handler can deal with the process closing asynchronously; it's a lot nicer than the synchronous method WaitForExit()
+            // Because the Exited event will be handled on a different thread from the UI thread, we must use a lambda.
+            // See http://stackoverflow.com/questions/9732709/the-calling-thread-cannot-access-this-object-because-a-different-thread-owns-it
+            Dispatcher.Invoke(new Action(() =>
+            {
+                _current = null;
+                Running = false;
+            }));
+        }
+
         private void PopulateListBox()
         {
             //TODO: Come back to this once the population is finalized
             FindAllGames();
-            
+
             foreach (var game in _gameManager)
             {
-                GameListBox.Items.Add(game.GameName);
+                GameListBox.Items.Add(game.Information.Title);
             }
-
+            GameListBox.Focus();
             GameListBox.SelectedIndex = 0;
-
-            //_listBox.BeginInit();
-            //TODO: REVIEW THIS http://stackoverflow.com/questions/6919694/wpf-adding-new-items-to-a-listbox
-            //foreach (var game in _gameManager.getList())
-            //    var listItem = new ListBoxItem().;
-            //    _listBox.Items.Add(game);
-            //_listBox.EndInit();
         }
 
         /// <summary>
-        /// Needs to find all games and populate the list dynamically
+        ///     Needs to find all games and populate the list dynamically
         /// </summary>
         public void FindAllGames()
         {
-            //TODO: Decide to make a folder somewhere on the arcade cabinet and set the directory path equal to that
-            //var gameLibraryDir = new DirectoryInfo(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory));
-
             //CreateDirectory will create the directory if it doesn't exist. If it does, it does not try to create it
             var folderList = Directory.CreateDirectory("C:\\GameLibrary").GetDirectories();
 
@@ -95,25 +101,25 @@ namespace ACMLauncher
                  * NumberPlayers:
                  * Description:
                  * ImageFolder:
-                 * VideoDemo:
-                 * 
+                 *
+                 * FUTURE* Allow for a VideoDemo, would be a video format that would play in the window once a game is selected 
                  */
 
-                //TODO change json to be an actual JSON object that can be queriable
-                //http://stackoverflow.com/questions/16045569/how-to-access-elements-of-a-jarray
-                //This is for MainWindow - to change the image when something is selected
-                var json = gameDirectory.GetFiles("*.json").FirstOrDefault();
+                var json = gameDirectory.GetFiles("*.json", SearchOption.AllDirectories).FirstOrDefault();
+
+                //Might be a problem in some cases
+                if (json == null) continue;
                 var game = new Game
                 {
                     PathToGameFolder = gameDirectory.FullName,
-                    GameName = gameDirectory.Name,
                     Executable = gameDirectory.GetFiles("*.exe").FirstOrDefault(),
-                    InializerFile = json
+                    InializerFile = json,
+                    //Contains all of the information about the game from the JSON file
+                    Information = JsonConvert.DeserializeObject<GameData>(File.ReadAllText(json.FullName))
                 };
 
                 _gameManager.Add(game);
             }
-
         }
 
         private void launchButton_Click(object sender, RoutedEventArgs e)
@@ -141,20 +147,6 @@ namespace ACMLauncher
                 MessageBox.Show("An error has occurred in starting the process.\n" + ex.Message, "Critical Error");
                 SetState(false);
             }
-        }
-
-        public void ApplicationDidQuit()
-        {
-            SetState(false);
-
-            // This event handler can deal with the process closing asynchronously; it's a lot nicer than the synchronous method WaitForExit()
-            // Because the Exited event will be handled on a different thread from the UI thread, we must use a lambda.
-            // See http://stackoverflow.com/questions/9732709/the-calling-thread-cannot-access-this-object-because-a-different-thread-owns-it
-            Dispatcher.Invoke(new Action(() =>
-            {
-                _current = null;
-                Running = false;
-            }));
         }
 
         private void quitButton_Click(object sender, RoutedEventArgs e)
@@ -187,17 +179,22 @@ namespace ACMLauncher
 
         private void selectProcess_OnClick(object sender, RoutedEventArgs e)
         {
+
         }
 
-        //This will read the contents of the JSON file. Update text on screen once selection has changed.
+        //Update fields on screen once selection has changed.
         private void GameList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //TODO: GameListBox, make the JSON file work with the below objective
-            //Change image based on which item in list is select, grab its images to change in this field.
+            //***First time this class is initialized, this throws an exception
+            if (_init) return;
 
-            var selectedGame = _gameManager.Single(x => x.GameName.Equals(GameListBox.SelectedItem.ToString()));
+            var selectedGame = _gameManager.First(x => x.Information.Title.Equals(GameListBox.SelectedItem));
 
-            GameNameBlock.Text = selectedGame.GameName;
+            //Change all of the information about the game once a new one is selectd
+            GameNameBlock.Text = selectedGame.Information.Title ?? "Unavailable";
+            GameDescription.Text = selectedGame.Information.Description ?? "Unavailable";
+
+            ExecutableLocationBox.Text = selectedGame.Executable == null ? "Unavailable" : selectedGame.Executable.ToString();
         }
     }
 }

@@ -12,12 +12,6 @@ namespace ACMLauncher.GameLibrary
     public class GameList : ObservableCollection<Game>
     {
         //It's my special type
-
-        public GameList()
-        {
-            
-        }
-
     }
 
 }

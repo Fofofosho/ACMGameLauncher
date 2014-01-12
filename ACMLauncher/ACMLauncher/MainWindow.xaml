@@ -14,25 +14,23 @@
         <CommandBinding Command="MoveDown"
                         CanExecute="SelectDown_ListBox"/>
     </Window.CommandBindings>
-    
+
     <Window.InputBindings>
         <KeyBinding Key="W" Command="MoveUp"/>
         <KeyBinding Key="S" Command="MoveDown"/>
     </Window.InputBindings>
-    
 
-    <Grid TextElement.Foreground="Red" Background="SlateGray"> 
-        
-        <TextBox x:Name="ExecutableLocationBox" HorizontalAlignment="Left" Height="20" Margin="82,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="235" Text="C:\Windows\notepad.exe"/>
+
+    <Grid Background="SlateGray">
 
         <!--**Different looks for the listbox**
             http://msdn.microsoft.com/en-us/library/windows/apps/hh464965.aspx
             http://www.codeproject.com/Articles/18561/Custom-ListBox-Layout-in-WPF    
         -->
-        <ListBox x:Name="GameListBox" FontSize="30" HorizontalAlignment="Left" Height="740" Margin="52,84,0,0" VerticalAlignment="Top" Width="550" SelectionMode="Single" SelectionChanged="GameList_OnSelectionChanged"/>
-        <Image x:Name ="ImageBox" HorizontalAlignment="Left" Height="434" Margin="700,390,0,0" VerticalAlignment="Top" Width="676"/>
-        <TextBlock x:Name="GameNameBlock" Height="80" Margin="700,84,216,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBox x:Name="GameDescription" HorizontalAlignment="Left" Height="134" Margin="700,205,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="676"/>
+        <ListBox x:Name="GameListBox" FontSize="30" HorizontalAlignment="Left" Height="728" Margin="93,72,0,0" VerticalAlignment="Top" Width="597" SelectionMode="Single" SelectionChanged="GameList_OnSelectionChanged"/>
+        <TextBlock x:Name="GameNameBlock" FontSize="40"  Height="116" Margin="796,48,120,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBox x:Name="GameDescription" FontSize="24" HorizontalAlignment="Left" Height="152" Margin="796,205,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="676"/>
+        <Image x:Name ="ImageBox" HorizontalAlignment="Left" Height="434" Margin="796,390,0,0" VerticalAlignment="Top" Width="676"/>
 
     </Grid>
 

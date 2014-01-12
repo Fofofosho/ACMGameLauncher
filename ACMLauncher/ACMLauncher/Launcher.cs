@@ -38,6 +38,10 @@ namespace ACMLauncher
             _current = new Process();
             _current.EnableRaisingEvents = true;            // Needed for the Exited event
             _current.StartInfo.UseShellExecute = true;      // Needed for launching of jars and swfs without setting Arguments
+
+            //DEBUG
+            _current.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+
             _current.Exited += Process_Exited;
 
             _ld = ld;

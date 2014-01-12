@@ -63,7 +63,6 @@ namespace ACMLauncher
 
         private void PopulateListBox()
         {
-            //TODO: Come back to this once the population is finalized
             FindAllGames();
 
             foreach (var game in _gameManager)
@@ -118,20 +117,21 @@ namespace ACMLauncher
 
         private void SelectGame_OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.R || e.Key == Key.Z)
+            if (e.Key != Key.R && e.Key != Key.Z) return;
+
+            var selectedGame = _gameManager.First(x => x.Information.Title.Equals(GameListBox.SelectedItem));
+
+            //Run our selectedGame's executable
+            try
             {
-                // Let's run our valid executable.
-                try
-                {
-                    _launcher.SetProgram(ExecutableLocationBox.Text);
-                    _launcher.StartProgram();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error has occurred in starting the process.\n" + ex.Message, "Critical Error");
-                }
+                if (selectedGame == null) return;
+                _launcher.SetProgram(selectedGame.Executable.FullName);
+                _launcher.StartProgram();
             }
-            
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occurred in starting the process.\n" + ex.Message, "Critical Error");
+            }
         }
 
         //Update fields on screen once selection has changed.
@@ -146,16 +146,8 @@ namespace ACMLauncher
             GameNameBlock.Text = selectedGame.Information.Title ?? "Unavailable";
             GameDescription.Text = selectedGame.Information.Description ?? "Unavailable";
 
-            //TODO: REMOVE---DEBUG
-            try
-            {
-                ExecutableLocationBox.Text = selectedGame.Executable.FullName;
-            }
-            catch (NullReferenceException)
-            {
-                ExecutableLocationBox.Text = "Unavailable";
-            }
-            
+            //TODO - add information that is in the json file to the screen
+
         }
 
         //Handles the moving the selector upwards in the listbox

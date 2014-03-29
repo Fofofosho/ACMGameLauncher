@@ -82,7 +82,9 @@ namespace ACMLauncher
         public void FindAllGames()
         {
             //CreateDirectory will create the directory if it doesn't exist. If it does, it does not try to create it
-            var folderList = Directory.CreateDirectory("C:\\GameLibrary").GetDirectories();
+            var directory = Directory.Exists("C:\\GameLibrary") ? new DirectoryInfo("C:\\GameLibrary") : Directory.CreateDirectory("C:\\GameLibrary");
+
+            var folderList = directory.GetDirectories();
 
             foreach (var gameDirectory in folderList)
             {

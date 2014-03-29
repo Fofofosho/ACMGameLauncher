@@ -161,7 +161,9 @@ namespace ACMLauncher
 
             //Change all of the information about the game once a new one is selectd
             GameNameBlock.Text = selectedGame.Information.Title ?? "Unavailable";
-            GameDescription.Text = selectedGame.Information.Description ?? "Unavailable";
+            GameDescription.Text = selectedGame.Information.Description + "\n\n\n" + 
+                                   "Players: " + selectedGame.Information.NumberPlayers;
+            GameDetailsAuthor.Text = "Author: " + selectedGame.Information.Author;
 
             //TODO - add information that is in the json file to the screen
 

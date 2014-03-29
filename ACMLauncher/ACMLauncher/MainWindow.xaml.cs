@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using ACMLauncher.GameLibrary;
 using Newtonsoft.Json;
 
@@ -41,6 +42,8 @@ namespace ACMLauncher
             KeyDown += SelectGame_OnKeyDown;
             _gameManager = new GameList();
             PopulateListBox();
+
+            SetupGui();
 
             _init = false;
         }
@@ -111,8 +114,20 @@ namespace ACMLauncher
                 };
 
                 _gameManager.Add(game);
-                
+
             }
+        }
+
+        private void SetupGui()
+        {
+            GameNameBlock.Foreground = new SolidColorBrush(Colors.White);
+            GameNameBlock.FontFamily = new FontFamily("Calibri");
+
+            GameDescription.Foreground = new SolidColorBrush(Colors.White);
+            GameDescription.FontFamily = new FontFamily("Arial");
+
+            GameDetailsAuthor.Foreground = new SolidColorBrush(Colors.White);
+            GameDetailsAuthor.FontFamily = new FontFamily("Arial");
         }
 
         private void SelectGame_OnKeyDown(object sender, KeyEventArgs e)

@@ -1,10 +1,10 @@
-Alt-ACMGameLauncher
+ACMGameLauncher
 ===============
 
 ### Launcher for Games on the ACM Game Cabinet
 
 
-Alt-Files of importance
+Files of importance
 =====================
 
 ### MainWindow.xaml & MainWindow.xaml.cs

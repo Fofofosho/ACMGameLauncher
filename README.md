@@ -1,17 +1,18 @@
 ACMGameLauncher
 ===============
 
-### Launcher for Games on the ACM Game Cabinet
+### Launcher for NAU created Games on the ACM Game Cabinet
+
+Please visit the [Wiki](https://github.com/Fofofosho/ACMGameLauncher/wiki) for more information
 
 
-Files of importance
-=====================
+### Files of importance
 
-### MainWindow.xaml & MainWindow.xaml.cs
+**MainWindow.xaml & MainWindow.xaml.cs**
 
-These handle the code for how it looks and C# for the the view.
+ * These handle the code for how it looks and C# for the the view.
 
-### Launcher.cs
+**Launcher.cs**
 
 Handles the C# for the launcher of the application
 
